@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.codepath.apps.tumblrsnap.PhotosAdapter;
 import com.codepath.apps.tumblrsnap.R;
@@ -42,7 +43,7 @@ public class PhotosFragment extends Fragment {
 	private static final int CROP_PHOTO_CODE = 3;
 	private static final int POST_PHOTO_CODE = 4;
 	
-	private String photoUri;
+	private Uri photoUri;
 	private Bitmap photoBitmap;
 	
 	TumblrClient client;
@@ -88,11 +89,18 @@ public class PhotosFragment extends Fragment {
 			case R.id.action_take_photo:
 			{
 				// Take the user to the camera app
+				Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				photoUri = Uri.fromFile(getOutputMediaFile());
+				camera.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+				startActivityForResult(camera, TAKE_PHOTO_CODE);
 			}
 			break;
 			case R.id.action_use_existing:
 			{
 				// Take the user to the gallery app
+				Intent existingPhoto = new Intent(Intent.ACTION_PICK,
+						MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(existingPhoto, PICK_PHOTO_CODE);
 			}
 			break;
 		}
@@ -101,23 +109,40 @@ public class PhotosFragment extends Fragment {
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == Activity.RESULT_OK) {
-			if (requestCode == TAKE_PHOTO_CODE) {
-				// Extract the photo that was just taken by the camera
-				
+		switch (requestCode) {
+		case TAKE_PHOTO_CODE:   // photo captured by camera
+			if (resultCode == Activity.RESULT_OK) {
+				// The captured photo is available in photoUri
 				// Call the method below to trigger the cropping
-				// cropPhoto(photoUri)
-			} else if (requestCode == PICK_PHOTO_CODE) {
-				// Extract the photo that was just picked from the gallery
-				
-				// Call the method below to trigger the cropping
-				// cropPhoto(photoUri)
-			} else if (requestCode == CROP_PHOTO_CODE) {
-				photoBitmap = data.getParcelableExtra("data");
-				startPreviewPhotoActivity();
-			} else if (requestCode == POST_PHOTO_CODE) {
-				reloadPhotos();
+				cropPhoto(photoUri);
+			} else if (resultCode == Activity.RESULT_CANCELED) {
+				Toast.makeText(getActivity(), R.string.error_canceled, Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getActivity(), R.string.error_camera, Toast.LENGTH_SHORT).show();
 			}
+			break;
+			
+		case PICK_PHOTO_CODE:	// pick photo
+			if (resultCode == Activity.RESULT_OK) {
+				// The captured photo is available in photoUri
+				photoUri = data.getData();
+				// Call the method below to trigger the cropping
+				cropPhoto(photoUri);
+			} else if (resultCode == Activity.RESULT_CANCELED) {
+				Toast.makeText(getActivity(), R.string.error_canceled, Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getActivity(), R.string.error_pick, Toast.LENGTH_SHORT).show();
+			}
+			break;
+			
+		case CROP_PHOTO_CODE:
+			photoBitmap = data.getParcelableExtra("data");
+			startPreviewPhotoActivity();
+			break;
+			
+		case POST_PHOTO_CODE:
+			reloadPhotos();
+			break;
 		}
 	}
 	
