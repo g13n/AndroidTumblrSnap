@@ -5,14 +5,14 @@
         android:icon="@android:drawable/ic_menu_camera"
         android:orderInCategory="200"
         android:showAsAction="always"
-        android:title="Add Photo">
+        android:title="@string/photos_menu_title">
         <menu>
             <item
                 android:id="@+id/action_take_photo"
-                android:title="Take Photo"/>
+                android:title="@string/action_take_photo"/>
             <item
                 android:id="@+id/action_use_existing"
-                android:title="Use Existing"/>
+                android:title="@string/action_use_existing"/>
         </menu>
     </item>
 </menu>

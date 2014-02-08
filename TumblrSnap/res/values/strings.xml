@@ -12,5 +12,12 @@
     </string-array>
 
     <string name="title_activity_preview_photo">PreviewPhotoActivity</string>
+    
+    <string name="btnLogin_label">Login to Tumblr</string>
+    <string name="btnLogout_label">Log out of Tumblr</string>
+    
+    <string name="photos_menu_title">Add Photo</string>
+    <string name="action_take_photo">Take photo</string>
+    <string name="action_use_existing">Use existing</string>
 
 </resources>

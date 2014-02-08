@@ -13,7 +13,6 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -92,6 +91,7 @@ public class PhotosFragment extends Fragment {
 				Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 				photoUri = Uri.fromFile(getOutputMediaFile());
 				camera.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+				// Camera will save the photo taken in photoUri
 				startActivityForResult(camera, TAKE_PHOTO_CODE);
 			}
 			break;
@@ -112,8 +112,10 @@ public class PhotosFragment extends Fragment {
 		switch (requestCode) {
 		case TAKE_PHOTO_CODE:   // photo captured by camera
 			if (resultCode == Activity.RESULT_OK) {
-				// The captured photo is available in photoUri
-				// Call the method below to trigger the cropping
+				/*
+				 * The captured photo is available in photoUri.
+				 * See case R.id.action_take_photo in onOptionsItemSelected.
+				 */
 				cropPhoto(photoUri);
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				Toast.makeText(getActivity(), R.string.error_canceled, Toast.LENGTH_SHORT).show();
@@ -124,9 +126,7 @@ public class PhotosFragment extends Fragment {
 			
 		case PICK_PHOTO_CODE:	// pick photo
 			if (resultCode == Activity.RESULT_OK) {
-				// The captured photo is available in photoUri
 				photoUri = data.getData();
-				// Call the method below to trigger the cropping
 				cropPhoto(photoUri);
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				Toast.makeText(getActivity(), R.string.error_canceled, Toast.LENGTH_SHORT).show();
@@ -184,18 +184,6 @@ public class PhotosFragment extends Fragment {
 		cropIntent.putExtra("return-data", true);
 		//start the activity - we handle returning in onActivityResult
 		startActivityForResult(cropIntent, CROP_PHOTO_CODE);
-	}
-	
-	private String getFileUri(Uri mediaStoreUri) {
-		String[] filePathColumn = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getActivity().getContentResolver().query(mediaStoreUri,
-                filePathColumn, null, null, null);
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String fileUri = cursor.getString(columnIndex);
-        cursor.close();
-        
-        return fileUri;
 	}
 	
 	private void startPreviewPhotoActivity() {
