@@ -4,16 +4,16 @@
     <string name="app_name">tumblrsnap</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
     <string-array name="add_photo_items">
         <item>Take Photo</item>
         <item>Use Existing</item>
     </string-array>
 
-    <string name="title_activity_preview_photo">PreviewPhotoActivity</string>
+    <string name="title_activity_preview_photo">Preview Photo</string>
     
-    <string name="btnLogin_label">Login to Tumblr</string>
+    <string name="btnLogin_label">Connect with Tumblr</string>
     <string name="btnLogout_label">Log out of Tumblr</string>
     
     <string name="photos_menu_title">Add Photo</string>
